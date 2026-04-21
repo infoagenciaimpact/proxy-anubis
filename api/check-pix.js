@@ -1,4 +1,11 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(200).end();
+  }
+  res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método não permitido' });
   }
@@ -16,6 +23,6 @@ export default async function handler(req, res) {
     if (!response.ok) return res.status(response.status).json(data);
     return res.status(200).json({ id: data.id, status: data.status });
   } catch (err) {
-    return res.status(500).json({ error: 'Erro interno do servidor' });
+    return res.status(500).json({ error: 'Erro interno: ' + err.message });
   }
 }
